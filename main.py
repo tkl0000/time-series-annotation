@@ -7,10 +7,14 @@ marker = ""
 df = ""
 
 def exit():
-    df.to_csv('path', index=False)
+    global path
+    df.to_csv(path, index=False)
     print('Saved.')
 
 def menu():
+    global df
+    global marker
+    plt.ion()
     plt.plot(df.iloc[:,0], df.iloc[:,1])
     plt.show()
     print('Commands:')
@@ -28,21 +32,26 @@ def menu():
         else:
             begin = int(command[0])
             end = int(command[1])
-            df.iloc[begin:end, df.columns.get_loc('annotation')] = [marker] * (begin-end+1)
+            df.loc[begin-2:end-2, 'annotation'] = [marker] * (end-begin+1)
+            print(df['annotation'])
 
 def get_path():
+    global df
+    global path
     print('Enter .csv path: ')
     path = input()
-    df = pd.read_csv('data.csv')
+    df = pd.read_csv(path)
     df['annotation'] = [''] * df.shape[0]
     menu()
 
 def main():
+    global df
+    global path
     if (len(sys.argv) == 1):
         get_path()
     else:
         path = sys.argv[1]
-        df = pd.read_csv('data.csv')
+        df = pd.read_csv(path)
         df['annotation'] = [''] * df.shape[0]
         menu()
 
